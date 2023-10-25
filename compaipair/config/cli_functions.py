@@ -1,6 +1,6 @@
 import os
 
-from compaipair.utils import get_cache_path, get_api_key
+from compaipair.utils import get_cache_path, get_api_key, create_cache_dir
 
 
 def print_cache_location():
@@ -14,3 +14,9 @@ def save_api_key(api_key: str):
 
 def show_api_key():
     print(get_api_key())
+
+
+def init(api_key):
+    if not os.path.exists(get_cache_path()):
+        create_cache_dir()
+    save_api_key(api_key)

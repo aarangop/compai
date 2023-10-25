@@ -4,6 +4,12 @@ import google.generativeai as palm
 from google.api_core import retry
 from tinydb import TinyDB
 
+prompt_template = """
+{priming}
+{question}
+{decorator}
+"""
+
 
 class NoApiKeyException(Exception):
     pass
@@ -20,15 +26,18 @@ def db():
     return TinyDB(db_path())
 
 
-def get_cache_path(create_if_not_exists: bool = True):
-    cache_path = (
+def get_cache_path():
+    return (
         os.environ["COMPAI_CACHE_PATH"]
         if "COMPAI_CACHE_PATH" in os.environ
         else os.path.join(os.path.expanduser("~"), ".compai")
     )
-    if not os.path.exists(cache_path) and create_if_not_exists:
+
+
+def create_cache_dir():
+    cache_path = get_cache_path()
+    if not os.path.exists(cache_path):
         os.mkdir(cache_path)
-    return cache_path
 
 
 def api_key_path():
@@ -42,13 +51,6 @@ def get_api_key():
             return f.read()
     except FileNotFoundError:
         raise NoApiKeyException
-
-
-prompt_template = """
-{priming}
-{question}
-{decorator}
-"""
 
 
 def try_read_file(potential_path):
@@ -84,12 +86,15 @@ def prompt_code(priming: str, code_file: str, decorator: str):
     return prompt_template.format(priming=priming, question=code, decorator=decorator)
 
 
-def configure_palm_api(fn, *args, **kwargs):
-    def wrapper():
-        palm.configure(api_key=get_api_key(), transport="rest")
-        fn(*args, **kwargs)
+def configure_palm_api():
+    try:
+        api_key = get_api_key()
+    except NoApiKeyException:
+        if "GOOGLE_API_KEY" not in os.environ:
+            raise NoApiKeyException
+        api_key = os.environ["GOOGLE_API_KEY"]
 
-    return wrapper
+    palm.configure(api_key=api_key, transport="rest")
 
 
 def print_completion_results(completion, prompt=None):

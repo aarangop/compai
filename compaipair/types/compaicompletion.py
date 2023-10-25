@@ -3,6 +3,12 @@ from google.generativeai.types import Model, Completion
 
 from compaipair.utils import configure_palm_api
 
+prompt_template = """
+{priming}
+{question}
+{decorator}
+"""
+
 
 class CompaiCompletion:
     model: Model
@@ -11,13 +17,12 @@ class CompaiCompletion:
     decorator: str
     result: Completion
 
-    @configure_palm_api
     def __init__(
         self,
         model: Model,
         question: str,
-        priming: str = None,
-        decorator: str = None,
+        priming: str = "",
+        decorator: str = "",
         temperature: float = 0.7,
     ):
         self.model = model
@@ -27,10 +32,13 @@ class CompaiCompletion:
         self.temperature = temperature
 
     def complete(self):
+        configure_palm_api()
         return palm.generate_text(
             prompt=self.prompt, model=self.model, temperature=self.temperature
         )
 
     @property
     def prompt(self):
-        return f"{self.priming}\n{self.question}\n{self.decorator}"
+        return prompt_template.format(
+            priming=self.priming, question=self.question, decorator=self.decorator
+        ).strip()

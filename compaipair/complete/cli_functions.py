@@ -3,15 +3,14 @@ import google.generativeai as palm
 from compaipair.utils import configure_palm_api
 
 
-@configure_palm_api
 def available_models():
+    configure_palm_api()
     for m in palm.list_models():
         print(f"name: {m.name}")
         print(f"description: {m.description}")
         print(f"generation methods: {m.supported_generation_methods}")
 
 
-@configure_palm_api
 def complete(question, priming, decorator, model_name, temperature, output):
     pass
     # model = next(filter(lambda m: model_name in m.name, palm.list_models()), None)
