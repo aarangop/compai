@@ -17,11 +17,22 @@ def db_path():
     return os.path.join(get_cache_path(), "db.json")
 
 
-def db():
+def get_db() -> TinyDB:
     if not os.path.exists(db_path()):
         with open(db_path(), "w"):
             pass
-    return TinyDB(db_path())
+    if get_db.db is None:
+        get_db.db = TinyDB(db_path())
+    return get_db.db
+
+
+get_db.db = None
+
+
+def close_db():
+    if get_db.db is not None:
+        get_db().close()
+    get_db.db = None
 
 
 def get_cache_path():

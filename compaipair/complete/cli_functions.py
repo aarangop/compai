@@ -2,7 +2,7 @@ from rich.console import Console
 from rich.markdown import Markdown
 
 from compaipair.types.compaicompletion import CompaiCompletion
-from compaipair.utils import configure_palm_api, get_available_models
+from compaipair.utils import configure_palm_api, get_available_models, close_db
 
 console = Console()
 
@@ -12,7 +12,6 @@ available_models_output_template = """# {model_name}
 - description: {model_description}
 - generation methods: 
 {generation_methods}
-
 ---"""
 
 
@@ -41,6 +40,7 @@ def complete(
     temperature: float = 0.7,
     verbose: bool = False,
     plain_text_output: bool = False,
+    template: str = None,
     output: str = None,
 ):
     completion = CompaiCompletion(
@@ -49,6 +49,7 @@ def complete(
         decorator=decorator,
         model=model_name,
         temperature=temperature,
+        template=template,
     )
     completion.complete()
 
@@ -63,3 +64,4 @@ def complete(
         else:
             completion_output = completion_result
         console.print(completion_output)
+    close_db()

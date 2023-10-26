@@ -29,10 +29,10 @@ def test_save_api_key_saves_api_key(capsys):
 
 
 def test_print_cache_path_prints_cache_path_when_env_variable_set(capsys):
-    os.environ["COMPAI_CACHE_PATH"] = "/usr/home/.compai"
+    os.environ["COMPAI_CACHE_PATH"] = "/usr/home/.compaipair"
     print_cache_location()
     captured = capsys.readouterr().out.strip()
-    assert captured == "/usr/home/.compai"
+    assert captured == "/usr/home/.compaipair"
 
 
 def test_complete_with_priming_prompts_primed_question(mocker, model):

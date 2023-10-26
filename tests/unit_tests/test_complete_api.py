@@ -1,6 +1,37 @@
 from dataclasses import dataclass
 
+import pytest
+
 from compaipair.complete.cli_functions import complete, available_models
+from compaipair.types.completion_template import CompletionTemplate
+
+
+@pytest.fixture
+def patch_generate_text(mocker):
+    @dataclass
+    class ResultMock:
+        result: str
+
+    response = "The answer to life, the universe, and everything is 42"
+    mocker.patch(
+        "compaipair.types.compaicompletion.palm.generate_text",
+        return_value=ResultMock(result=response),
+    )
+    yield
+
+
+@pytest.fixture
+def patch_get_available_models(mocker, models):
+    mocker.patch(
+        "compaipair.types.compaicompletion.get_available_models", return_value=models
+    )
+
+
+@pytest.fixture
+def patch_complete_api_google_generativeai_methods(
+    patch_get_available_models, patch_generate_text
+):
+    yield
 
 
 def test_available_models_outputs_list_of_models(capsys, mocker, model):
@@ -136,24 +167,11 @@ def test_complete_with_decorator_prompts_model_with_decorated_question(
 
 
 def test_complete_with_priming_and_decorator_prompts_model_with_primed_and_decorated_question(
-    mocker, capsys, models
+    patch_complete_api_google_generativeai_methods, capsys, models
 ):
-    @dataclass
-    class ResultMock:
-        result: str
-
     priming = "You're an old man who's very wise."
     question = "What's the meaning of life, the universe and everything?"
     decorator = "Please tell me why."
-
-    response = "The answer to life, the universe, and everything is 42"
-    mocker.patch(
-        "compaipair.types.compaicompletion.palm.generate_text",
-        return_value=ResultMock(result=response),
-    )
-    mocker.patch(
-        "compaipair.types.compaicompletion.get_available_models", return_value=models
-    )
 
     complete(
         question=question,
@@ -165,3 +183,16 @@ def test_complete_with_priming_and_decorator_prompts_model_with_primed_and_decor
 
     capture = capsys.readouterr().out.strip()
     assert f"{priming}\n{question}\n{decorator}" in capture
+
+
+def test_complete_with_template_uses_template_priming(
+    patch_complete_api_google_generativeai_methods, capsys
+):
+    CompletionTemplate(
+        name="test_template", priming="Yees, you behind the fence!"
+    ).save()
+
+    complete(question="Stand still laddie!", template="test_template", verbose=True)
+
+    captured = capsys.readouterr().out.strip()
+    assert "Yees, you behind the fence!" in captured

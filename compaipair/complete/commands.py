@@ -29,9 +29,23 @@ from compaipair.complete.cli_functions import complete, available_models
     default=False,
     help="Print output in plain text, otherwise will be formatted as Markdown",
 )
+@click.option(
+    "--template",
+    default=None,
+    type=click.STRING,
+    help="Template to prime and decorate prompt.",
+)
 @click.argument("question")
 def complete_cli(
-    question, priming, decorator, output, temperature, model_name, verbose, plain_text
+    question,
+    priming,
+    decorator,
+    output,
+    temperature,
+    model_name,
+    verbose,
+    plain_text,
+    template,
 ):
     complete(
         question=question,
@@ -42,6 +56,7 @@ def complete_cli(
         model_name=model_name,
         verbose=verbose,
         plain_text_output=plain_text,
+        template=template,
     )
 
 
