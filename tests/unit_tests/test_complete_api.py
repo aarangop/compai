@@ -54,7 +54,7 @@ def test_available_models_prints_available_model_description(mocker, capsys, mod
     )
 
 
-def test_complete_with_question_outputs_an_answer(capsys, mocker):
+def test_complete_with_question_outputs_an_answer(capsys, mocker, models):
     @dataclass
     class ResultMock:
         result: str
@@ -64,6 +64,9 @@ def test_complete_with_question_outputs_an_answer(capsys, mocker):
     mocker.patch(
         "compaipair.types.compaicompletion.palm.generate_text",
         return_value=ResultMock(result=response),
+    )
+    mocker.patch(
+        "compaipair.types.compaicompletion.get_available_models", return_value=models
     )
 
     complete(question=question)
@@ -72,26 +75,93 @@ def test_complete_with_question_outputs_an_answer(capsys, mocker):
     assert response in capture
 
 
-def test_complete_with_priming_and_decorator_prompts_model_with_primed_and_decorated_question(
-    mocker, capsys
+def test_complete_with_priming_prompts_model_with_primed_question(
+    mocker, capsys, models
 ):
     @dataclass
     class ResultMock:
         result: str
 
-    priming = "You're an old man who's very wise"
+    priming = "You're an old man who's very wise."
     question = "What's the meaning of life, the universe and everything?"
-    decorator = "Please tell me why"
 
     response = "The answer to life, the universe, and everything is 42"
     mocker.patch(
         "compaipair.types.compaicompletion.palm.generate_text",
         return_value=ResultMock(result=response),
     )
+    mocker.patch(
+        "compaipair.types.compaicompletion.get_available_models", return_value=models
+    )
 
-    complete(question=question, priming=priming, decorator=decorator, verbose=True)
+    complete(
+        question=question,
+        priming=priming,
+        verbose=True,
+        plain_text_output=True,
+    )
 
     capture = capsys.readouterr().out.strip()
-    assert all(
-        [expected_text in capture for expected_text in [priming, question, decorator]]
+    assert f"{priming}\n{question}" in capture
+
+
+def test_complete_with_decorator_prompts_model_with_decorated_question(
+    mocker, capsys, models
+):
+    @dataclass
+    class ResultMock:
+        result: str
+
+    question = "What's the meaning of life, the universe and everything?"
+    decorator = "Please tell me why."
+
+    response = "The answer to life, the universe, and everything is 42"
+    mocker.patch(
+        "compaipair.types.compaicompletion.palm.generate_text",
+        return_value=ResultMock(result=response),
     )
+    mocker.patch(
+        "compaipair.types.compaicompletion.get_available_models", return_value=models
+    )
+
+    complete(
+        question=question,
+        decorator=decorator,
+        verbose=True,
+        plain_text_output=True,
+    )
+
+    capture = capsys.readouterr().out.strip()
+    assert f"{question}\n{decorator}" in capture
+
+
+def test_complete_with_priming_and_decorator_prompts_model_with_primed_and_decorated_question(
+    mocker, capsys, models
+):
+    @dataclass
+    class ResultMock:
+        result: str
+
+    priming = "You're an old man who's very wise."
+    question = "What's the meaning of life, the universe and everything?"
+    decorator = "Please tell me why."
+
+    response = "The answer to life, the universe, and everything is 42"
+    mocker.patch(
+        "compaipair.types.compaicompletion.palm.generate_text",
+        return_value=ResultMock(result=response),
+    )
+    mocker.patch(
+        "compaipair.types.compaicompletion.get_available_models", return_value=models
+    )
+
+    complete(
+        question=question,
+        priming=priming,
+        decorator=decorator,
+        verbose=True,
+        plain_text_output=True,
+    )
+
+    capture = capsys.readouterr().out.strip()
+    assert f"{priming}\n{question}\n{decorator}" in capture

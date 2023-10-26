@@ -23,9 +23,15 @@ from compaipair.complete.cli_functions import complete, available_models
     default=False,
     help="Verbose. Include prompt in output",
 )
+@click.option(
+    "--plain-text",
+    is_flag=True,
+    default=False,
+    help="Print output in plain text, otherwise will be formatted as Markdown",
+)
 @click.argument("question")
 def complete_cli(
-    question, priming, decorator, output, temperature, model_name, verbose
+    question, priming, decorator, output, temperature, model_name, verbose, plain_text
 ):
     complete(
         question=question,
@@ -35,6 +41,7 @@ def complete_cli(
         temperature=temperature,
         model_name=model_name,
         verbose=verbose,
+        plain_text_output=plain_text,
     )
 
 
