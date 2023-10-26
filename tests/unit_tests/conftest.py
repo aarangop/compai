@@ -11,6 +11,7 @@ from compaipair.config.cli_functions import init
 def create_test_env():
     test_cache_path = os.path.join(os.path.expanduser("~"), ".compai-test")
     os.environ["COMPAI_CACHE_PATH"] = test_cache_path
+    os.environ["GOOGLE_GENERATIVE_AI_API_KEY"] = ""
     init(api_key=";ldsakgfjkljhadfgl")
     yield
     shutil.rmtree(test_cache_path)

@@ -8,6 +8,13 @@ from compaipair.complete.cli_functions import complete, available_models
 @click.option("--decorator", help="Decorator to your prompt")
 @click.option("-o", "--output", default="./result.md", help="File to write output")
 @click.option(
+    "-i",
+    "--input",
+    type=click.Path(exists=True, dir_okay=False),
+    default=None,
+    help="File with input to append to the question.",
+)
+@click.option(
     "-t",
     "--temperature",
     default=0.7,
@@ -40,6 +47,7 @@ def complete_cli(
     question,
     priming,
     decorator,
+    input,
     output,
     temperature,
     model_name,

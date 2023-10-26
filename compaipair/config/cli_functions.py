@@ -7,8 +7,12 @@ def print_cache_location():
     print(get_cache_path())
 
 
+def api_key_path():
+    return os.path.join(get_cache_path(), "api_key")
+
+
 def save_api_key(api_key: str):
-    with open(os.path.join(get_cache_path(), "api_key"), "w") as f:
+    with open(api_key_path(), "w") as f:
         f.write(api_key)
 
 

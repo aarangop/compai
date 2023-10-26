@@ -1,9 +1,11 @@
+import os
 from dataclasses import dataclass
 
 import pytest
 
 from compaipair.complete.cli_functions import complete, available_models
 from compaipair.types.completion_template import CompletionTemplate
+from compaipair.utils import get_cache_path
 
 
 @pytest.fixture
@@ -196,3 +198,25 @@ def test_complete_with_template_uses_template_priming(
 
     captured = capsys.readouterr().out.strip()
     assert "Yees, you behind the fence!" in captured
+
+
+@pytest.fixture
+def test_input_file():
+    input_path = os.path.join(get_cache_path(), "test_input.txt")
+    with open(input_path, "w"):
+        pass
+    yield input_path
+
+    os.remove(input_path)
+
+
+def test_complete_with_input_appends_file_contents_to_the_prompt(
+    patch_complete_api_google_generativeai_methods, capsys, test_input_file
+):
+    with open(test_input_file, "w") as f:
+        f.write("These are some lines of code")
+
+    complete(question="Heey yooo", input=test_input_file, verbose=True)
+    captured = capsys.readouterr().out
+
+    assert "These are some lines of code" in captured

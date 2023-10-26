@@ -15,6 +15,7 @@ class CompaiCompletion:
     model: Model
     priming: str
     question: str
+    input: str
     decorator: str
     result: Completion
     api_key: str
@@ -29,9 +30,15 @@ class CompaiCompletion:
         decorator: str = "",
         temperature: float = 0.7,
         api_key: str = None,
+        input: str = None,
     ):
-        self.question = question
         self.temperature = temperature
+
+        if input is not None:
+            with open(input, "r") as f:
+                self.question = f"{question}\n{f.read()}"
+        else:
+            self.question = question
 
         if template is None:
             self.priming = priming

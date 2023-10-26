@@ -42,6 +42,7 @@ def complete(
     plain_text_output: bool = False,
     template: str = None,
     output: str = None,
+    input: str = None,
 ):
     completion = CompaiCompletion(
         question=question,
@@ -50,6 +51,7 @@ def complete(
         model=model_name,
         temperature=temperature,
         template=template,
+        input=input,
     )
     completion.complete()
 
@@ -64,4 +66,9 @@ def complete(
         else:
             completion_output = completion_result
         console.print(completion_output)
+
+        if output is not None:
+            with open(output, "w") as f:
+                f.write(completion_output)
+
     close_db()
