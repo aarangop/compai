@@ -12,6 +12,25 @@ prompt_template = """
 
 
 class CompaiCompletion:
+    """
+    Class to generate text completions using the Palm API.
+
+    Args:
+        model (Model | str): The model to use for completion. If a string is
+            provided, it will be used to select a model from the list of
+            available models. If None, the default model will be used.
+        template (str | CompletionTemplate | None): The template to use for
+            generating the completion prompt. If a string is provided, it will
+            be used to find a template by name. If None, the default template
+            will be used.
+        question (str): The question to be completed.
+        priming (str): The priming text to be used before the question.
+        decorator (str): The decorator text to be used after the question.
+        temperature (float): The temperature to use for completion.
+        api_key (str): The API key to use for the Palm API. If None, the
+            default API key will be used.
+    """
+
     model: Model
     priming: str
     question: str
@@ -29,7 +48,6 @@ class CompaiCompletion:
         decorator: str = "",
         temperature: float = 0.7,
         api_key: str = None,
-        input: str = None,
     ):
         self.temperature = temperature
 
@@ -55,6 +73,12 @@ class CompaiCompletion:
             self.model = self.get_model(model)
 
     def complete(self) -> Completion:
+        """
+        Generate the completion.
+
+        Returns:
+            A Completion object containing the generated text.
+        """
         self.result = palm.generate_text(
             prompt=self.prompt, model=self.model, temperature=self.temperature
         )
@@ -67,6 +91,13 @@ class CompaiCompletion:
 
     @property
     def prompt(self):
+        """
+        Get the completion prompt.
+
+        Returns:
+            A string containing the completion prompt.
+        """
+
         return prompt_template.format(
             priming=self.priming, question=self.question, decorator=self.decorator
         ).strip()

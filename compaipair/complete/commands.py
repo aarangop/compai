@@ -106,8 +106,6 @@ def complete_cli(
 )
 def complete_template_cli(
     question,
-    priming,
-    decorator,
     input_file,
     output,
     temperature,
@@ -119,8 +117,6 @@ def complete_template_cli(
     complete(
         input_file=input_file,
         question=question,
-        priming=priming,
-        decorator=decorator,
         output=output,
         temperature=temperature,
         model_name=model_name,

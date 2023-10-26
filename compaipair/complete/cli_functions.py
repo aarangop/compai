@@ -75,5 +75,7 @@ def complete(
         if output is not None:
             with open(output, "w") as f:
                 f.write(completion_result)
+    else:
+        raise Exception("No data returned by the model!")
 
     close_db()
