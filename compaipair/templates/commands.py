@@ -38,6 +38,12 @@ def edit_template_cli(name: str, priming: str, decorator: str):
 
 @templates_api.command("show", help="Show the list of available templates")
 @click.option("--name", "-n", default=None, help="Name of the template to show.")
-@click.option("--verbose", "-v", default=False, help="Show all the templates' contents")
+@click.option(
+    "--verbose",
+    "-v",
+    default=False,
+    is_flag=True,
+    help="Show all the templates' contents",
+)
 def show_templates_cli(name, verbose):
     show_templates(name, verbose)

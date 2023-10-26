@@ -76,3 +76,31 @@ def test_show_templates_shows_available_templates(capsys):
             for expected_text in ["test_template_1", "test_template_2"]
         ]
     )
+
+
+def test_show_templates_shows_available_templates(capsys):
+    templates = [
+        CompletionTemplate(
+            name="test_template_1",
+            priming="Test template 1 priming",
+            decorator="Test template 2 decorator",
+        ),
+        CompletionTemplate(
+            name="test_template_2",
+            priming="Test template 2 priming",
+            decorator="Test template 2 decorator",
+        ),
+    ]
+    for template in templates:
+        template.save()
+
+    show_templates(verbose=True)
+
+    captured = capsys.readouterr().out.strip()
+
+    assert all(
+        [
+            expected_text in captured
+            for expected_text in ["test_template_1", "test_template_2"]
+        ]
+    )

@@ -30,9 +30,10 @@ def show_templates(name: str = None, verbose: bool = False):
 
     if verbose:
         sample_question = "How to iterate through a list of strings?"
-        output = "---".join(
+        output = "\n---\n".join(
             [
                 template_output_template.format(
+                    template_name=template.name,
                     priming=template.priming,
                     decorator=template.decorator,
                     example_prompt=template.prompt(sample_question),

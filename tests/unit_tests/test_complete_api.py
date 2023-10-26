@@ -216,7 +216,7 @@ def test_complete_with_input_appends_file_contents_to_the_prompt(
     with open(test_input_file, "w") as f:
         f.write("These are some lines of code")
 
-    complete(question="Heey yooo", input=test_input_file, verbose=True)
+    complete(question="Heey yooo", input_file=test_input_file, verbose=True)
     captured = capsys.readouterr().out
 
     assert "These are some lines of code" in captured

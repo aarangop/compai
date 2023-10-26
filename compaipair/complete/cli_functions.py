@@ -42,8 +42,13 @@ def complete(
     plain_text_output: bool = False,
     template: str = None,
     output: str = None,
-    input: str = None,
+    input_file: str = None,
 ):
+    if input_file is not None:
+        print(f"Using input from file {input_file}")
+        with open(input_file, "r") as f:
+            question = f"{question}\n{f.read()}"
+
     completion = CompaiCompletion(
         question=question,
         priming=priming,
@@ -51,7 +56,7 @@ def complete(
         model=model_name,
         temperature=temperature,
         template=template,
-        input=input,
+        input=input_file,
     )
     completion.complete()
 
@@ -69,6 +74,6 @@ def complete(
 
         if output is not None:
             with open(output, "w") as f:
-                f.write(completion_output)
+                f.write(completion_result)
 
     close_db()
