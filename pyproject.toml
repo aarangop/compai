@@ -14,6 +14,8 @@ google-generativeai = "^0.2.2"
 click = "^8.1.7"
 pytest = "^7.4.2"
 tinydb = "^4.8.0"
+python-dotenv = "^1.0.0"
+rich = "^13.6.0"
 
 [tool.poetry.dev-dependencies]
 black = "^23.10.1"

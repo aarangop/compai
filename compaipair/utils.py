@@ -4,15 +4,13 @@ import google.generativeai as palm
 from google.api_core import retry
 from tinydb import TinyDB
 
+from compaipair.types.exceptions import NoApiKeyException
+
 prompt_template = """
 {priming}
 {question}
 {decorator}
 """
-
-
-class NoApiKeyException(Exception):
-    pass
 
 
 def db_path():
@@ -40,11 +38,18 @@ def create_cache_dir():
         os.mkdir(cache_path)
 
 
+def get_available_models():
+    return palm.list_models()
+
+
 def api_key_path():
     return os.path.join(get_cache_path(), "api_key")
 
 
 def get_api_key():
+    # Try to load api key from environment
+    if "GOOGLE_GENERATIVEAI_API_KEY" in os.environ:
+        return os.environ["GOOGLE_GENERATIVEAI_API_KEY"]
     try:
         # Load API key
         with open(api_key_path(), "r") as f:
@@ -86,13 +91,9 @@ def prompt_code(priming: str, code_file: str, decorator: str):
     return prompt_template.format(priming=priming, question=code, decorator=decorator)
 
 
-def configure_palm_api():
-    try:
+def configure_palm_api(api_key: str = None):
+    if api_key is None:
         api_key = get_api_key()
-    except NoApiKeyException:
-        if "GOOGLE_API_KEY" not in os.environ:
-            raise NoApiKeyException
-        api_key = os.environ["GOOGLE_API_KEY"]
 
     palm.configure(api_key=api_key, transport="rest")
 
