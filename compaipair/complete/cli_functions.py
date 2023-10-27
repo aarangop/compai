@@ -56,7 +56,6 @@ def complete(
         model=model_name,
         temperature=temperature,
         template=template,
-        input=input_file,
     )
     completion.complete()
 

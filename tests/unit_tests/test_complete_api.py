@@ -8,32 +8,15 @@ from compaipair.types.completion_template import CompletionTemplate
 from compaipair.utils import get_cache_path
 
 
-@pytest.fixture
-def patch_generate_text(mocker):
-    @dataclass
-    class ResultMock:
-        result: str
-
-    response = "The answer to life, the universe, and everything is 42"
-    mocker.patch(
-        "compaipair.types.compaicompletion.palm.generate_text",
-        return_value=ResultMock(result=response),
-    )
-    yield
+@dataclass
+class ResultMock:
+    result: str
 
 
-@pytest.fixture
 def patch_get_available_models(mocker, models):
     mocker.patch(
         "compaipair.types.compaicompletion.get_available_models", return_value=models
     )
-
-
-@pytest.fixture
-def patch_complete_api_google_generativeai_methods(
-    patch_get_available_models, patch_generate_text
-):
-    yield
 
 
 def test_available_models_outputs_list_of_models(capsys, mocker, model):
@@ -141,14 +124,11 @@ def test_complete_with_priming_prompts_model_with_primed_question(
 def test_complete_with_decorator_prompts_model_with_decorated_question(
     mocker, capsys, models
 ):
-    @dataclass
-    class ResultMock:
-        result: str
-
     question = "What's the meaning of life, the universe and everything?"
     decorator = "Please tell me why."
 
-    response = "The answer to life, the universe, and everything is 42"
+    response = "42 is the answer"
+    # noinspection DuplicatedCode
     mocker.patch(
         "compaipair.types.compaicompletion.palm.generate_text",
         return_value=ResultMock(result=response),
@@ -169,8 +149,17 @@ def test_complete_with_decorator_prompts_model_with_decorated_question(
 
 
 def test_complete_with_priming_and_decorator_prompts_model_with_primed_and_decorated_question(
-    patch_complete_api_google_generativeai_methods, capsys, models
+    capsys, models, mocker
 ):
+    response = "The answer to life, the universe, and everything is 42"
+    mocker.patch(
+        "compaipair.types.compaicompletion.palm.generate_text",
+        return_value=ResultMock(result=response),
+    )
+    mocker.patch(
+        "compaipair.types.compaicompletion.get_available_models", return_value=models
+    )
+
     priming = "You're an old man who's very wise."
     question = "What's the meaning of life, the universe and everything?"
     decorator = "Please tell me why."
@@ -187,9 +176,16 @@ def test_complete_with_priming_and_decorator_prompts_model_with_primed_and_decor
     assert f"{priming}\n{question}\n{decorator}" in capture
 
 
-def test_complete_with_template_uses_template_priming(
-    patch_complete_api_google_generativeai_methods, capsys
-):
+def test_complete_with_template_uses_template_priming(mocker, capsys, models):
+    response = "The answer to life, the universe, and everything is 42"
+    mocker.patch(
+        "compaipair.types.compaicompletion.palm.generate_text",
+        return_value=ResultMock(result=response),
+    )
+    mocker.patch(
+        "compaipair.types.compaicompletion.get_available_models", return_value=models
+    )
+
     CompletionTemplate(
         name="test_template", priming="Yees, you behind the fence!"
     ).save()
@@ -211,12 +207,21 @@ def test_input_file():
 
 
 def test_complete_with_input_appends_file_contents_to_the_prompt(
-    patch_complete_api_google_generativeai_methods, capsys, test_input_file
+    capsys, test_input_file, mocker, models
 ):
+    response = "The answer to life, the universe, and everything is 42"
+    mocker.patch(
+        "compaipair.types.compaicompletion.palm.generate_text",
+        return_value=ResultMock(result=response),
+    )
+    mocker.patch(
+        "compaipair.types.compaicompletion.get_available_models", return_value=models
+    )
     with open(test_input_file, "w") as f:
         f.write("These are some lines of code")
 
     complete(question="Heey yooo", input_file=test_input_file, verbose=True)
+
     captured = capsys.readouterr().out
 
     assert "These are some lines of code" in captured
