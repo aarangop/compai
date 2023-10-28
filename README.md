@@ -74,7 +74,7 @@ The following options are available:
 
 #### `complete-template`
 
-Usage: `compai complete [OPTIONS] QUESTION`
+Usage: `compai complete-template [OPTIONS] TEMPLATE`
 
 This command prompts the user for a **template**,  and uses the PaLM APIs to generate completions for the question. The completions are written to a file specified by the `-o` or `--output` flag.
 
@@ -90,11 +90,9 @@ The following options are available:
 
 #### `templates new`
 
-Creates a new template with priming and decorators.
-
 Usage: `compai templates new [OPTIONS] NAME`
 
-  Creates a new template with preset priming and decorators
+Creates a new template with priming and decorators
 
 Options:
 * `-p`, `--priming`:    Text for priming this template's prompts
@@ -102,9 +100,9 @@ Options:
 
 #### `templates edit`
 
-Edit an existing template.
-
 Usage: `compai complete-template [OPTIONS] TEMPLATE`
+
+Edit an existing template.
 
 Options:
 * `-q`, `--question` Optional question that will be appended to the template.
@@ -117,9 +115,9 @@ Options:
 
 #### `templates show`
 
-Show the list of available templates.
-
 Usage: `compai templates show [OPTIONS]`
+
+Show the list of available templates.
 
 `-n`, `--name` Name of the template to show.
 `-v`, `--verbose` Show all the templates' contents

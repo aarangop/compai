@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "compaipair"
-version = "0.4.3"
+version = "0.4.6"
 description = "A simple CLI for pair programming with Google Generative AI APIs"
 authors = ["Andrés Arango Pérez <andresap@protonmail.com>"]
 license = "MIT"
