@@ -57,12 +57,22 @@ def api_key_path():
     return os.path.join(get_cache_path(), "api_key")
 
 
-def get_api_key():
+def get_api_key() -> str:
+    """Gets the API key for the Google Generative AI API.
+
+    First, tries to load the API key from the environment variable
+    `GOOGLE_GENERATIVEAI_API_KEY`. If that fails, tries to load the API key
+    from the cache directory.
+    :raises: `NoApiKeyException`.
+
+    Returns:
+        str: The API key.
+    """
     # Try to load api key from environment
     if "GOOGLE_GENERATIVEAI_API_KEY" in os.environ:
         return os.environ["GOOGLE_GENERATIVEAI_API_KEY"]
     try:
-        # Load API key
+        # Load API key from file
         with open(api_key_path(), "r") as f:
             return f.read()
     except FileNotFoundError:
@@ -105,7 +115,8 @@ def prompt_code(priming: str, code_file: str, decorator: str):
 def configure_palm_api(api_key: str = None):
     if api_key is None:
         api_key = get_api_key()
-
+    if api_key is None:
+        raise NoApiKeyException
     palm.configure(api_key=api_key, transport="rest")
 
 

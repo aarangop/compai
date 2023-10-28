@@ -12,25 +12,6 @@ prompt_template = """
 
 
 class CompaiCompletion:
-    """
-    Class to generate text completions using the Palm API.
-
-    Args:
-        model (Model | str): The model to use for completion. If a string is
-            provided, it will be used to select a model from the list of
-            available models. If None, the default model will be used.
-        template (str | CompletionTemplate | None): The template to use for
-            generating the completion prompt. If a string is provided, it will
-            be used to find a template by name. If None, the default template
-            will be used.
-        question (str): The question to be completed.
-        priming (str): The priming text to be used before the question.
-        decorator (str): The decorator text to be used after the question.
-        temperature (float): The temperature to use for completion.
-        api_key (str): The API key to use for the Palm API. If None, the
-            default API key will be used.
-    """
-
     model: Model
     priming: str
     question: str

@@ -1,4 +1,5 @@
 import os
+import shutil
 
 import pytest
 
@@ -11,10 +12,14 @@ from compaipair.types.compaicompletion import CompaiCompletion
 from compaipair.utils import NoApiKeyException, api_key_path
 
 
-def test_available_models_throws_exception_if_no_key_is_saved_and_no_key_in_env(mocker):
+def test_available_models_throws_exception_if_no_key_is_saved_and_no_key_in_env(
+    mocker, compai_test_cache_path
+):
+    # Mock the environment variables to return an empty object.
+    mocker.patch("compaipair.utils.os.environ", return_value={})
+    # If exists, delete the api-key file
     if os.path.exists(api_key_path()):
         os.remove(api_key_path())
-    mocker.patch("os.environ", return_value={})
     with pytest.raises(NoApiKeyException):
         available_models()
 

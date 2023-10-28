@@ -12,7 +12,9 @@ def templates_api():
     pass
 
 
-@templates_api.command(name="new")
+@templates_api.command(
+    name="new", help="Creates a new template with preset priming and decorators"
+)
 @click.argument("name")
 @click.option(
     "--priming", "-p", default="", help="Text for priming this template's prompts"
@@ -24,7 +26,7 @@ def new_template_cli(name: str, priming, decorator):
     new_template(name, priming, decorator)
 
 
-@templates_api.command("edit")
+@templates_api.command("edit", help="Edit an existing template")
 @click.argument("name")
 @click.option(
     "--priming", "-p", default="", help="Text for priming this template's prompts"

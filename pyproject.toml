@@ -5,9 +5,7 @@ description = "A simple CLI for pair programming with Google Generative AI APIs"
 authors = ["Andrés Arango Pérez <andresap@protonmail.com>"]
 license = "MIT"
 homepage = "https://github.com/aarangop/compai"
-include = [
-    "data/**"
-]
+readme="README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
